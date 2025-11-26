@@ -1,0 +1,6 @@
+.env
+node_modules/
+codegen.yml
+generate.sh
+dist/
+schema.json

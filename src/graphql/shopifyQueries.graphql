@@ -1,0 +1,992 @@
+# GraphQL Storefront Queries and Mutations
+
+# 1. PRODUCTS Query
+query getProducts(
+  $first: Int
+  $after: String
+  $last: Int
+  $before: String
+  $query: String
+) {
+  products(
+    first: $first
+    after: $after
+    last: $last
+    before: $before
+    query: $query
+  ) {
+    edges {
+      cursor
+      node {
+        id
+        title
+        handle
+        description
+        descriptionHtml
+        availableForSale
+        tags
+        createdAt
+        updatedAt
+        vendor
+        productType
+
+        priceRange {
+          minVariantPrice {
+            amount
+            currencyCode
+          }
+          maxVariantPrice {
+            amount
+            currencyCode
+          }
+        }
+
+        images(first: 10) {
+          edges {
+            node {
+              id
+              url
+              altText
+              width
+              height
+            }
+          }
+        }
+
+        options(first: 10) {
+          id
+          name
+          values
+        }
+
+        variants(first: 20) {
+          edges {
+            cursor
+            node {
+              id
+              title
+              sku
+              availableForSale
+              requiresShipping
+              weight
+              weightUnit
+              selectedOptions {
+                name
+                value
+              }
+              price {
+                amount
+                currencyCode
+              }
+              compareAtPrice {
+                amount
+                currencyCode
+              }
+              image {
+                id
+                url
+                altText
+                width
+                height
+              }
+            }
+          }
+        }
+
+        metafields(identifiers: [{ namespace: "custom", key: "example_key" }]) {
+          namespace
+          key
+          value
+          type
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      hasPreviousPage
+      startCursor
+      endCursor
+    }
+  }
+}
+
+#2. product by Id
+query getProductById($id: ID!, $metafields: [HasMetafieldsIdentifier!]!) {
+  product(id: $id) {
+    id
+    title
+    handle
+    description
+    descriptionHtml
+    availableForSale
+    totalInventory
+    tags
+    vendor
+    productType
+    createdAt
+    updatedAt
+    publishedAt
+
+    seo {
+      title
+      description
+    }
+
+    # Fully Dynamic Metafields
+    metafields(identifiers: $metafields) {
+      namespace
+      key
+      value
+      type
+      reference {
+        __typename
+        ... on MediaImage {
+          id
+          image {
+            url
+            altText
+            width
+            height
+          }
+        }
+        ... on Video {
+          id
+          sources {
+            url
+            format
+          }
+        }
+      }
+    }
+
+    media(first: 20) {
+      edges {
+        node {
+          ... on MediaImage {
+            id
+            image {
+              url
+              altText
+              width
+              height
+            }
+          }
+          ... on Video {
+            id
+            sources {
+              url
+              format
+            }
+          }
+          ... on Model3d {
+            id
+            sources {
+              url
+            }
+          }
+          ... on ExternalVideo {
+            id
+            #url
+          }
+        }
+      }
+    }
+
+    images(first: 20) {
+      edges {
+        node {
+          id
+          url
+          altText
+          width
+          height
+        }
+      }
+    }
+
+    collections(first: 10) {
+      edges {
+        node {
+          id
+          title
+          handle
+        }
+      }
+    }
+
+    options {
+      id
+      name
+      values
+      optionValues {
+        id
+        name
+        swatch {
+          color
+          image {
+            id
+            #url
+          }
+        }
+        firstSelectableVariant {
+          id
+          title
+          availableForSale
+          price {
+            amount
+            currencyCode
+          }
+        }
+      }
+    }
+
+    priceRange {
+      minVariantPrice {
+        amount
+        currencyCode
+      }
+      maxVariantPrice {
+        amount
+        currencyCode
+      }
+    }
+
+    variants(first: 50) {
+      edges {
+        cursor
+        node {
+          id
+          title
+          sku
+          requiresShipping
+          availableForSale
+          quantityAvailable
+          weight
+          weightUnit
+
+          selectedOptions {
+            name
+            value
+          }
+
+          price {
+            amount
+            currencyCode
+          }
+
+          compareAtPrice {
+            amount
+            currencyCode
+          }
+
+          image {
+            id
+            url
+            altText
+            width
+            height
+          }
+        }
+      }
+    }
+  }
+}
+
+#3. product Recommendation
+query GetProductRecommendations(
+  $productId: ID! #$metafieldIdentifiers: [MetafieldIdentifier!]
+) {
+  productRecommendations(productId: $productId) {
+    id
+    title
+    handle
+    description
+    tags
+    productType
+    availableForSale
+    createdAt
+    updatedAt
+    vendor
+
+    images(first: 10) {
+      edges {
+        node {
+          id
+          url
+          altText
+          width
+          height
+        }
+      }
+    }
+
+    # metafields(identifiers: $metafieldIdentifiers) {
+    #   namespace
+    #   key
+    #   value
+    #   type
+    # }
+
+    variants(first: 10) {
+      edges {
+        node {
+          id
+          sku
+          title
+          price {
+            amount
+            currencyCode
+          }
+          compareAtPrice {
+            amount
+            currencyCode
+          }
+          availableForSale
+          quantityAvailable
+        }
+      }
+    }
+  }
+}
+
+#4. product by handle
+query GetProductByHandle(
+  $handle: String! #$metafieldIdentifiers: [MetafieldIdentifier!]
+) {
+  product(handle: $handle) {
+    id
+    title
+    handle
+    description
+    tags
+    productType
+    vendor
+    availableForSale
+    createdAt
+    updatedAt
+
+    images(first: 20) {
+      edges {
+        node {
+          id
+          url
+          altText
+          width
+          height
+        }
+      }
+    }
+
+    options {
+      id
+      name
+      values
+    }
+
+    variants(first: 20) {
+      edges {
+        node {
+          id
+          sku
+          title
+          availableForSale
+          selectedOptions {
+            name
+            value
+          }
+          price {
+            amount
+            currencyCode
+          }
+          compareAtPrice {
+            amount
+            currencyCode
+          }
+        }
+      }
+    }
+
+    # metafields(identifiers: $metafieldIdentifiers) {
+    #   namespace
+    #   key
+    #   value
+    #   type
+    # }
+  }
+}
+
+# product type
+query GetAllProductTypes($first: Int = 250) {
+  products(first: $first) {
+    edges {
+      node {
+        id
+        productType
+      }
+    }
+  }
+}
+
+# 2. GET COLLECTIONS Query
+query getCollections($first: Int, $after: String) {
+  collections(first: $first, after: $after) {
+    edges {
+      cursor
+      node {
+        id
+        title
+        handle
+        description
+        updatedAt
+        products(first: 5) {
+          edges {
+            node {
+              id
+              title
+            }
+          }
+        }
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+}
+
+# 3. GET CURRENT SHOP Info Query
+query getShopInfo {
+  shop {
+    name
+    description
+    paymentSettings {
+      currencyCode
+      countryCode
+      enabledPresentmentCurrencies
+    }
+  }
+}
+
+# 4. CART MUTATIONS AND QUERIES
+
+#Get cart
+query GetCart($cartId: ID!, $first: Int!) {
+  cart(id: $cartId) {
+    id
+    createdAt
+    updatedAt
+    checkoutUrl
+
+    buyerIdentity {
+      email
+      phone
+      countryCode
+      customer {
+        id
+        displayName
+        email
+      }
+    }
+
+    attributes {
+      key
+      value
+    }
+
+    lines(first: $first) {
+      edges {
+        node {
+          id
+          quantity
+
+          attributes {
+            key
+            value
+          }
+
+          merchandise {
+            ... on ProductVariant {
+              id
+              title
+              sku
+
+              price {
+                amount
+                currencyCode
+              }
+
+              compareAtPrice {
+                amount
+                currencyCode
+              }
+
+              image {
+                url
+                altText
+              }
+
+              product {
+                id
+                title
+                handle
+                vendor
+                productType
+              }
+            }
+          }
+        }
+      }
+    }
+
+    cost {
+      subtotalAmount {
+        amount
+        currencyCode
+      }
+      totalAmount {
+        amount
+        currencyCode
+      }
+      totalTaxAmount {
+        amount
+        currencyCode
+      }
+    }
+  }
+}
+
+# Create a cart with a line item
+mutation cartCreate($input: CartInput!, $first: Int!) {
+  cartCreate(input: $input) {
+    cart {
+      id
+      createdAt
+      updatedAt
+      checkoutUrl
+
+      buyerIdentity {
+        email
+        phone
+        countryCode
+      }
+
+      attributes {
+        key
+        value
+      }
+
+      lines(first: $first) {
+        edges {
+          node {
+            id
+            quantity
+
+            merchandise {
+              ... on ProductVariant {
+                id
+                title
+                sku
+
+                product {
+                  id
+                  title
+                  handle
+                  vendor
+                  productType
+                }
+
+                price {
+                  amount
+                  currencyCode
+                }
+
+                compareAtPrice {
+                  amount
+                  currencyCode
+                }
+
+                image {
+                  url
+                  altText
+                }
+              }
+            }
+
+            attributes {
+              key
+              value
+            }
+          }
+        }
+      }
+
+      cost {
+        subtotalAmount {
+          amount
+          currencyCode
+        }
+        totalAmount {
+          amount
+          currencyCode
+        }
+        totalTaxAmount {
+          amount
+          currencyCode
+        }
+      }
+    }
+
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# Update cart lines
+mutation cartLinesUpdate(
+  $cartId: ID!
+  $first: Int!
+  $lines: [CartLineUpdateInput!]!
+) {
+  cartLinesUpdate(cartId: $cartId, lines: $lines) {
+    cart {
+      id
+      updatedAt
+
+      lines(first: $first) {
+        edges {
+          node {
+            id
+            quantity
+
+            merchandise {
+              ... on ProductVariant {
+                id
+                title
+                sku
+
+                price {
+                  amount
+                  currencyCode
+                }
+
+                image {
+                  url
+                  altText
+                }
+              }
+            }
+          }
+        }
+      }
+
+      cost {
+        subtotalAmount {
+          amount
+          currencyCode
+        }
+        totalAmount {
+          amount
+          currencyCode
+        }
+      }
+    }
+
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# Update cart attributes / buyer identity
+mutation cartBuyerIdentityUpdate(
+  $cartId: ID!
+  $buyerIdentity: CartBuyerIdentityInput!
+) {
+  cartBuyerIdentityUpdate(cartId: $cartId, buyerIdentity: $buyerIdentity) {
+    cart {
+      id
+
+      buyerIdentity {
+        email
+        phone
+        countryCode
+        customer {
+          id
+          displayName
+          email
+        }
+      }
+    }
+
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# Set cart metafields
+mutation cartMetafieldsSet($metafields: [CartMetafieldsSetInput!]!) {
+  cartMetafieldsSet(metafields: $metafields) {
+    metafields {
+      id
+      namespace
+      key
+      value
+      type
+      createdAt
+      updatedAt
+    }
+
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation cartLinesAdd($cartId: ID!, $lines: [CartLineInput!]!) {
+  cartLinesAdd(cartId: $cartId, lines: $lines) {
+    cart {
+      id
+      checkoutUrl
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+mutation cartLinesRemove($cartId: ID!, $lineIds: [ID!]!) {
+  cartLinesRemove(cartId: $cartId, lineIds: $lineIds) {
+    cart {
+      id
+      checkoutUrl
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# 5. CUSTOMER MUTATIONS
+# Customer sign up (create access token)
+mutation customerCreate($input: CustomerCreateInput!) {
+  customerCreate(input: $input) {
+    customer {
+      firstName
+      lastName
+      email
+      phone
+      acceptsMarketing
+    }
+    customerUserErrors {
+      field
+      message
+      code
+    }
+  }
+}
+
+# Customer login (create access token)
+mutation customerAccessTokenCreate($email: String!, $password: String!) {
+  customerAccessTokenCreate(input: { email: $email, password: $password }) {
+    customerAccessToken {
+      accessToken
+      expiresAt
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+# Customer update
+mutation customerUpdate(
+  $customerAccessToken: String!
+  $customer: CustomerUpdateInput!
+) {
+  customerUpdate(
+    customerAccessToken: $customerAccessToken
+    customer: $customer
+  ) {
+    customer {
+      id
+      firstName
+      lastName
+      email
+      phone
+    }
+    userErrors {
+      field
+      message
+    }
+  }
+}
+
+query getCustomer($token: String!) {
+  customer(customerAccessToken: $token) {
+    id
+    firstName
+    lastName
+    acceptsMarketing
+    email
+    phone
+  }
+}
+
+mutation customerRecover($email: String!) {
+  customerRecover(email: $email) {
+    customerUserErrors {
+      field
+      message
+    }
+  }
+}
+
+query GetBlogs($first: Int!) {
+  blogs(first: $first) {
+    edges {
+      node {
+        id
+        handle
+        title
+        # articles
+      }
+    }
+  }
+}
+
+query GetBlog($handle: String!, $first: Int!) {
+  blog(handle: $handle) {
+    id
+    handle
+    title
+    # url
+
+    articles(first: $first) {
+      edges {
+        node {
+          id
+          handle
+          title
+          author {
+            name
+            email
+          }
+          excerpt
+          contentHtml
+          content
+          publishedAt
+          image {
+            url
+            altText
+          }
+        }
+      }
+    }
+  }
+}
+
+query GetArticles($first: Int!) {
+  articles(first: $first) {
+    edges {
+      node {
+        id
+        handle
+        title
+        blog {
+          id
+          handle
+          title
+        }
+        author {
+          name
+        }
+        excerpt
+        contentHtml
+        publishedAt
+        image {
+          url
+          altText
+        }
+      }
+    }
+  }
+}
+
+query getSingleArticle($blogHandle: String!, $articleHandle: String!) {
+  blog(handle: $blogHandle) {
+    articleByHandle(handle: $articleHandle) {
+      id
+      title
+      contentHtml
+      publishedAt
+      authorV2 {
+        name
+      }
+      image {
+        url
+      }
+      seo {
+        title
+        description
+      }
+    }
+  }
+}
+
+query getCustomerOrders($customerAccessToken: String!, $first: Int!) {
+  customer(customerAccessToken: $customerAccessToken) {
+    id
+    firstName
+    lastName
+    email
+
+    orders(first: $first, sortKey: PROCESSED_AT, reverse: true) {
+      edges {
+        node {
+          id
+          name
+          orderNumber
+          processedAt
+          financialStatus
+          fulfillmentStatus
+
+          totalPrice {
+            amount
+            currencyCode
+          }
+
+          lineItems(first: 10) {
+            edges {
+              node {
+                title
+                quantity
+                variant {
+                  title
+                  image {
+                    url
+                  }
+                  price {
+                    amount
+                    currencyCode
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+# 6. CHECKOUT (if using legacy storefront checkout, optional)
+# Note: Shopify has deprecated some checkout APIs — use Cart API
