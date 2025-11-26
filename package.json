@@ -19,12 +19,22 @@
     "LICENSE"
   ],
   "scripts": {
-    "dev": "ts-node index.ts",
-    "build": "tsc",
+    "dev": "ts-node src/tests/test.ts",
+    "build": "rimraf dist && tsc && npm run build:cjs",
+    "build:cjs": "tsc --project tsconfig.cjs.json",
     "dev:test": "ts-node src/tests/test.ts",
     "test": "node dist/tests/test.js",
-    "codegen": "graphql-codegen --config codegen.yml"
+    "codegen": "graphql-codegen --config codegen.yml",
+    "prepare": "npm run build"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kiddo9/shopify_storefront_sdk.git"
+  },
+  "bugs": {
+    "url": "https://github.com/kiddo9/shopify_storefront_sdk/issues"
+  },
+  "homepage": "https://github.com/kiddo9/shopify_storefront_sdk#readme",
   "keywords": [
     "shopify",
     "shopify storefront",

@@ -362,6 +362,11 @@ class ShopifyStorefront {
       );
     return data;
   }
+
+  async customQuery(query: string, variables: object) {
+    const data = await this.client.query(query, variables);
+    return data;
+  }
 }
 
 export default ShopifyStorefront;

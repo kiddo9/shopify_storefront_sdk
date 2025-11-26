@@ -22,7 +22,7 @@ A welcoming open-source environment ensures collaboration, learning, and respect
 If you experience or witness issues, contact the repository maintainer.
 
 Maintainer: Paschal  
-Email: (Your email)
+Email: paschalelechi@gmail.com
 
 ## 5. Enforcement
 

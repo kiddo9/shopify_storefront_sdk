@@ -2,14 +2,14 @@
 
 Thank you for considering contributing to the Shopify Storefront SDK!
 
-We welcome all community involvement — from bug fixes to new features.
+We welcome all community involvement from bug fixes to new features.
 
 ---
 
 ## 🧪 1. Clone & Install
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/shopify-storefront-sdk.git
+git clone https://github.com/kiddo9/shopify_storefront_sdk.git
 cd shopify-storefront-sdk
 npm install
 ```
