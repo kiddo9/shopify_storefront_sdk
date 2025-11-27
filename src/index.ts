@@ -55,6 +55,7 @@ import {
   CartCreateDocument,
   CartLinesAddDocument,
   CartLinesRemoveDocument,
+  CartLinesUpdateDocument,
   CustomerAccessTokenCreateDocument,
   CustomerCreateDocument,
   CustomerRecoverDocument,
@@ -258,7 +259,7 @@ class ShopifyStorefront {
   }: CartLinesUpdateMutationVariables) {
     const data: CartLinesUpdateMutation =
       await this.client.query<CartLinesUpdateMutation>(
-        CartLinesRemoveDocument,
+        CartLinesUpdateDocument,
         {
           cartId,
           first,

@@ -19,10 +19,10 @@
     "LICENSE"
   ],
   "scripts": {
-    "dev": "ts-node src/tests/test.ts",
+    "dev": "node --loader ts-node/esm src/tests/test.ts",
     "build": "rimraf dist && tsc && npm run build:cjs",
     "build:cjs": "tsc --project tsconfig.cjs.json",
-    "dev:test": "ts-node src/tests/test.ts",
+    "dev:test": "node --loader ts-node/esm src/tests/test.ts",
     "test": "node dist/tests/test.js",
     "codegen": "graphql-codegen --config codegen.yml",
     "prepare": "npm run build"

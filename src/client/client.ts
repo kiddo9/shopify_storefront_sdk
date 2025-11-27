@@ -5,6 +5,9 @@ class ShopifyClient {
   private endpoint;
   private token;
   constructor({ storeUrl, storefrontToken }: StoreConfig) {
+    if (!storeUrl?.includes(".myshopify.com")) {
+      throw new Error(`The store url ${storeUrl} is not supported by shopify`);
+    }
     (this.endpoint = `https://${storeUrl}/api/2025-04/graphql.json`),
       (this.token = storefrontToken);
   }

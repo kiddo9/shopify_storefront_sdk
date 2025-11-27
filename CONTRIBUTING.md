@@ -10,7 +10,7 @@ We welcome all community involvement from bug fixes to new features.
 
 ```bash
 git clone https://github.com/kiddo9/shopify_storefront_sdk.git
-cd shopify-storefront-sdk
+cd shopify_storefront_sdk
 npm install
 ```
 

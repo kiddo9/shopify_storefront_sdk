@@ -139,7 +139,7 @@ async function runTests() {
     });
     console.log(JSON.stringify(cart, null, 2));
 
-    console.log("\n===== TEST → cartCreate() =====");
+    console.log("\n===== TEST → cartBuyerIdentity() =====");
     const buyerIdentity = await client.cartBuyerIdentityUpdate({
       cartId: String(cart?.cartCreate?.cart?.id),
       buyerIdentity: {
@@ -179,9 +179,10 @@ async function runTests() {
       first: 20,
       lines: [
         {
-          quantity: 1,
-          merchandiseId: "",
-          id: "",
+          quantity: 2,
+          merchandiseId:
+            existingCart?.cart?.lines?.edges[0]?.node?.merchandise?.id ?? "",
+          id: existingCart?.cart?.lines?.edges[0]?.node?.id ?? "",
         },
       ],
     });
@@ -190,9 +191,7 @@ async function runTests() {
     console.log("\n===== TEST → CartLineRemove() =====");
     const removeFromCart = await client.cartLinesRemove({
       cartId: String(cart?.cartCreate?.cart?.id),
-      lineIds: [
-        products?.products?.edges[0]?.node?.variants?.edges[0]?.node?.id ?? "",
-      ],
+      lineIds: [String(existingCart?.cart?.lines?.edges[0]?.node?.id)],
     });
     console.log(JSON.stringify(removeFromCart, null, 2));
 
@@ -212,7 +211,20 @@ async function runTests() {
     console.log(JSON.stringify(orderList, null, 2));
 
     console.log("\n===== TEST → customeQuery() =====");
-    const customQuery = await client.customQuery("", {});
+    const customQuery = await client.customQuery(
+      `query getShopInfo {
+          shop {
+            name
+            description
+            paymentSettings {
+              currencyCode
+              countryCode
+              enabledPresentmentCurrencies
+            }
+          }
+        }`,
+      {}
+    );
     console.log(JSON.stringify(customQuery, null, 2));
 
     console.log("Test completed successfully");
