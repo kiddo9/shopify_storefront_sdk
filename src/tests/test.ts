@@ -32,7 +32,7 @@
  */
 
 import ShopifyStorefront from "../index.js";
-import dotenv from "dotenv";
+import * as dotenv from "dotenv";
 dotenv.config();
 
 const { SHOPIFY_STORE_DOMAIN, SHOPIFY_STOREFRONT_TOKEN } = process.env;
