@@ -41,6 +41,6 @@
     "moduleDetection": "force",
     "skipLibCheck": true
   },
-  "include": ["src/**/*", "cjs-wrapper.js"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules"]
 }

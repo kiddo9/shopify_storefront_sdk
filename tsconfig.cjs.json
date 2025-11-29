@@ -2,11 +2,13 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "outDir": "dist/cjs",
-    "module": "CommonJS",
-    "moduleResolution": "Node",
+    "module": "commonjs",
+    "target": "es2019",
+
     "verbatimModuleSyntax": false,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true
+    "isolatedModules": false,
+    "declaration": true,
+    "declarationMap": true
   },
-  "include": ["src"]
+  "include": ["src/**/*"]
 }

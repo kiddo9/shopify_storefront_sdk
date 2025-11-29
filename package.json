@@ -1,7 +1,7 @@
 {
   "name": "shopify_storefront_sdk",
-  "version": "1.0.1",
-  "main": "./cjs-wrapper.js",
+  "version": "1.0.3",
+  "main": "cjs-wrapper.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -19,9 +19,12 @@
     "LICENSE",
     "cjs-wrapper.js"
   ],
+  "sideEffects": false,
   "scripts": {
+    "clean": "rimraf dist",
     "dev": "node --loader ts-node/esm src/tests/test.ts",
-    "build": "rimraf dist && tsc && npm run build:cjs",
+    "build": "rimraf dist && npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc --project tsconfig.json",
     "build:cjs": "tsc --project tsconfig.cjs.json",
     "dev:test": "node --loader ts-node/esm src/tests/test.ts",
     "test": "node dist/tests/test.js",

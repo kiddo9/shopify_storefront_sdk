@@ -6,3 +6,5 @@ tests/
 codegen.yml
 generate.sh
 tsconfig.json
+dist/tests
+dist/cjs/tests

@@ -31,14 +31,14 @@
  * ============================================================================
  */
 
-import ShopifyStorefront from "../index.js";
+import ShopifyStoreFront from "shopify_storefront_sdk";
 import * as dotenv from "dotenv";
 dotenv.config();
 
 const { SHOPIFY_STORE_DOMAIN, SHOPIFY_STOREFRONT_TOKEN } = process.env;
 
 // Instantiate the SDK once
-const client = new ShopifyStorefront({
+const client = new ShopifyStoreFront({
   storeUrl: String(SHOPIFY_STORE_DOMAIN),
   storefrontToken: String(SHOPIFY_STOREFRONT_TOKEN),
 });
