@@ -15,11 +15,11 @@ Built with TypeScript, designed to help developers move faster when building Sho
 ## 🔧 Installation
 
 ```bash
-npm install shopify-storefront-sdk
+npm install shopify_storefront_sdk
 # or
-yarn add shopify-storefront-sdk
+yarn add shopify_storefront_sdk
 # or
-pnpm add shopify-storefront-sdk
+pnpm add shopify_storefront_sdk
 
 ```
 
