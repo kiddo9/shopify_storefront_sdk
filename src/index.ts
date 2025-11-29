@@ -371,3 +371,7 @@ class ShopifyStorefront {
 }
 
 export default ShopifyStorefront;
+
+if (typeof module !== "undefined") {
+  module.exports = ShopifyStorefront;
+}

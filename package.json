@@ -1,6 +1,6 @@
 {
   "name": "shopify_storefront_sdk",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "main": "cjs-wrapper.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",

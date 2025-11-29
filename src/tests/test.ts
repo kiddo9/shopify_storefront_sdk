@@ -31,7 +31,7 @@
  * ============================================================================
  */
 
-import ShopifyStoreFront from "shopify_storefront_sdk";
+import ShopifyStoreFront from "../index.js";
 import * as dotenv from "dotenv";
 dotenv.config();
 
