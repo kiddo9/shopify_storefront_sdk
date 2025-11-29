@@ -1,7 +1,7 @@
 # 📦 Shopify Storefront SDK (Node.js + TypeScript)
 
 A fully typed, lightweight, and developer-friendly **Node.js SDK for the Shopify Storefront GraphQL API**.  
-Built with TypeScript, GraphQL Codegen, and graphql-request — designed to help developers move faster when building Shopify headless storefronts.
+Built with TypeScript, designed to help developers move faster when building Shopify headless storefronts.
 
 ✔ Fully typed queries & responses  
 ✔ Simple, intuitive API  
@@ -26,7 +26,9 @@ pnpm add shopify-storefront-sdk
 ## 🚀 Quick Start
 
 ```ts
-import { ShopifyStorefront } from "shopify-storefront-sdk";
+import ShopifyStorefront from "shopify-storefront-sdk";
+// or
+const { default: ShopifyStorefront } = require("shopify_storefront_sdk");
 
 const shopify = new ShopifyStorefront({
   domain: process.env.SHOPIFY_STORE_DOMAIN!,
@@ -34,9 +36,10 @@ const shopify = new ShopifyStorefront({
 });
 
 // Fetch a product
-const product = await shopify.getProductById(
-  "gid://shopify/Product/1234567890"
-);
+const product = await client.getProductById({
+  id: "id",
+  metafields: [],
+});
 
 console.log(product.title);
 ```
@@ -53,10 +56,8 @@ console.log(product.title);
   - Carts (create/get/update)
   - Customers (create, login, recovery flow)
 
-- **GraphQL Codegen built in**
 - **Consistent error handling**
 - **Supports custom queries**
-- **Zero heavy dependencies**
 
 ---
 
@@ -78,19 +79,26 @@ const shopify = new ShopifyStorefront({
 #### Get product by ID
 
 ```ts
-await shopify.getProductById(productId);
+await shopify.getProductById({
+  id: "id",
+  metafields: [],
+});
 ```
 
 #### Get product by handle
 
 ```ts
-await shopify.getProductByHandle("my-product");
+await shopify.getProductByHandle({
+  handle: "",
+});
 ```
 
 #### Recommendations
 
 ```ts
-await shopify.getProductRecommendations(productId);
+await shopify.getProductRecommendations({
+  productId: "",
+});
 ```
 
 ---
@@ -101,32 +109,16 @@ await shopify.getProductRecommendations(productId);
 
 ```ts
 await shopify.createCart({
-  lines: [{ merchandiseId: "...", quantity: 1 }],
+  input: {
+    lines: [
+      {
+        quantity: 1,
+        merchandiseId: "",
+      },
+    ],
+  },
+  first: 20,
 });
-```
-
-#### Get cart
-
-```ts
-await shopify.getCart(cartId);
-```
-
----
-
-### Customers
-
-```ts
-await shopify.createCustomer({ email, password });
-await shopify.sendResetEmail(email);
-await shopify.verifyToken(token);
-```
-
----
-
-### Blogs & Articles
-
-```ts
-await shopify.getBlog("news", 10);
 ```
 
 ---
@@ -135,12 +127,11 @@ await shopify.getBlog("news", 10);
 
 ```
 /src
-  /queries        → .graphql operations
+  /client
+  /utils
+  /graphql       → .graphql operations
   /generated      → Auto-generated code
   index.ts        → SDK export
-
-/codegen.yml       → Codegen config
-/schema.graphql    → Shopify schema
 ```
 
 ---
@@ -148,8 +139,8 @@ await shopify.getBlog("news", 10);
 ## 🛠 Development Setup
 
 ```bash
-git clone https://github.com/YOUR_USERNAME/shopify-storefront-sdk.git
-cd shopify-storefront-sdk
+git clone https://github.com/kiddo9/shopify_storefront_sdk.git
+cd shopify_storefront_sdk
 npm install
 ```
 
@@ -165,14 +156,14 @@ SHOPIFY_STOREFRONT_TOKEN=xxxx
 ## 🔨 Build
 
 ```bash
-npm run build
+npm run prepare
 ```
 
 Outputs:
 
 ```
+dist/cjs/index.js
 dist/index.js
-dist/index.cjs
 dist/index.d.ts
 ```
 
@@ -181,32 +172,9 @@ dist/index.d.ts
 ## 🧪 Testing
 
 ```bash
-npm run dev
+npm run dev:test
 # after build:
 npm run test
-```
-
----
-
-## 🧬 Code Generation
-
-Regenerate types & operations:
-
-```bash
-npm run generate
-```
-
-Scans:
-
-```
-src/queries/*.graphql
-schema.graphql
-```
-
-Generates:
-
-```
-src/generated/
 ```
 
 ---
@@ -242,16 +210,6 @@ If this SDK saves you time, please star ⭐ the repository—
 it helps others discover it and motivates future improvements!
 
 ---
-
-```
-
-If you want, I can also generate:
-
-✅ Better badges (npm version, downloads, license, TypeScript)
-✅ CONTRIBUTING.md
-✅ API documentation table
-✅ Full GitHub project template (issues, PR templates, workflows)
-```
 
 ```
 
