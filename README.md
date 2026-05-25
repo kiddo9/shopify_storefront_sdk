@@ -1,5 +1,7 @@
 # 📦 Shopify Storefront SDK (Node.js + TypeScript)
 
+[![CI](https://github.com/kiddo9/shopify_storefront_sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/kiddo9/shopify_storefront_sdk/actions/workflows/ci.yml)
+
 A fully typed, lightweight, and developer-friendly **Node.js SDK for the Shopify Storefront GraphQL API**.  
 Built with TypeScript, designed to help developers move faster when building Shopify headless storefronts.
 

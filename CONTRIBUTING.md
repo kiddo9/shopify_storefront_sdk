@@ -26,9 +26,15 @@ npm run build
 
 ## 🧪 3. Run Tests
 
-```bash
-npm test
-```
+1. Copy `.env.example` to `.env`:
+   ```bash
+   cp .env.example .env
+   ```
+2. Add your Shopify credentials to the `.env` file.
+3. Run the tests:
+   ```bash
+   npm test
+   ```
 
 ---
 
@@ -49,7 +55,7 @@ chore/update-readme
 - Go to GitHub → “Create Pull Request”
 - Describe your change clearly
 - Link issues if applicable
-- Ensure tests are passing
+- Ensure the GitHub Actions CI passes
 
 ---
 

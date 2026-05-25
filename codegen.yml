@@ -1,0 +1,20 @@
+schema:
+  - https://${SHOPIFY_STORE_DOMAIN}/api/2025-01/graphql.json:
+      headers:
+        X-Shopify-Storefront-Access-Token: ${SHOPIFY_STOREFRONT_TOKEN}
+
+documents: "src/**/*.graphql"
+
+generates:
+  src/generated/shopify.ts:
+    plugins:
+      - "typescript"
+      - "typescript-operations"
+      - "typescript-graphql-request"
+    config:
+      rawRequest: true
+      documentMode: "string" # removes gql-tag entirely
+      useTypeImports: true
+      skipTypename: false
+      enumsAsTypes: true
+      exportRequestFunctions: true
