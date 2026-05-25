@@ -4,3 +4,7 @@ generate.sh
 dist/
 schema.json
 .DS_Store
+.idea/
+.vscode/
+*.log
+*.tsbuildinfo
