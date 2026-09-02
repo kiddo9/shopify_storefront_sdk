@@ -71,7 +71,49 @@ console.log(product.title);
 const shopify = new ShopifyStorefront({
   domain: "yourstore.myshopify.com",
   token: "your-storefront-access-token",
+  apiVersion: "2025-01", // Optional: defaults to 2025-01. Can be set to "unstable" or future versions.
+  maxRetries: 3,         // Optional: Automatically retries on rate limits (429/503). Defaults to 3.
 });
+```
+
+---
+
+### Verify Webhooks
+
+Easily verify incoming Shopify Webhooks using our static helper method (useful for API routes):
+
+```ts
+const isValid = ShopifyStorefront.verifyWebhook(
+  rawBodyBuffer, 
+  req.headers['x-shopify-hmac-sha256'], 
+  process.env.SHOPIFY_WEBHOOK_SECRET
+);
+
+if (!isValid) throw new Error("Unauthorized");
+```
+
+---
+
+### Pagination
+
+Automatically fetch all pages of a GraphQL connection without manually managing cursors:
+
+```ts
+const allProducts = await shopify.autoPaginate(
+  (cursor) => shopify.getProducts({ first: 250, after: cursor }),
+  (response) => response.products
+);
+
+// allProducts is now a flat array of Product nodes!
+```
+
+### Shop Info
+
+Retrieve general store configuration such as name, description, and currency settings:
+
+```ts
+const shop = await shopify.getShopInfo();
+console.log(shop.shop.name);
 ```
 
 ---
@@ -105,7 +147,54 @@ await shopify.getProductRecommendations({
 
 ---
 
-### Carts
+### ⚡ Advanced Caching
+
+Repeatedly fetching the same data (like Store Info or Product details) can waste network time and hit Shopify rate limits. The SDK comes with a powerful, flexible caching layer.
+
+```ts
+import { ShopifyStorefront, InMemoryCache } from 'shopify_storefront_sdk';
+
+const shopify = new ShopifyStorefront({
+  domain: "yourstore.myshopify.com",
+  token: "your-storefront-access-token",
+  cache: new InMemoryCache(), // Automatically caches GraphQL Queries
+  defaultCacheTtl: 60         // Cache duration in seconds (default is 60)
+});
+
+// 1st Call: Hits the network (~200ms)
+const shopInfo1 = await shopify.getShopInfo(); 
+
+// 2nd Call: Instantly returns from memory (~0ms)
+const shopInfo2 = await shopify.getShopInfo(); 
+```
+
+**Note:** The SDK intelligently ignores mutations. `createCart` or `addCartLines` will *never* be cached.
+
+You can also use your own cache (like Redis) by passing an object that matches the `ShopifyCache` interface (`get(key)`, `set(key, value, ttl)`).
+
+---
+
+### 🛒 Cart Manager (Recommended)
+
+Managing a Cart manually can be tedious. The SDK includes a stateful `CartManager` that automatically handles cart creation in the background:
+
+```ts
+// Initialize with no ID to lazily create a cart, or pass an existing ID.
+const cart = shopify.cart();
+
+// Will automatically call createCart() in the background!
+await cart.addLines([{ merchandiseId: "gid://...", quantity: 1 }]);
+
+// The newly created cart ID is safely stored
+console.log(cart.id); 
+
+// Easily fetch the latest state
+const state = await cart.get();
+```
+
+---
+
+### Manual Cart Operations
 
 #### Create a cart
 
@@ -121,6 +210,26 @@ await shopify.createCart({
   },
   first: 20,
 });
+```
+
+---
+
+### 👤 Customer Session Manager
+
+Passing the `customerAccessToken` into every method manually can be repetitive. Use the stateful `CustomerSession` to automatically bind the token to all operations for that user:
+
+```ts
+// 1. Log the customer in
+const auth = await shopify.loginCustomer({ email: "...", password: "..." });
+const token = auth.customerAccessTokenCreate.customerAccessToken.accessToken;
+
+// 2. Initialize a Customer Session for that user
+const session = shopify.customer(token);
+
+// 3. Effortlessly manage their account!
+const isValid = await session.verify();
+const orders = await session.getOrders({ first: 10 });
+await session.update({ customer: { firstName: "John" } });
 ```
 
 ---
@@ -213,6 +322,3 @@ it helps others discover it and motivates future improvements!
 
 ---
 
-```
-
-```

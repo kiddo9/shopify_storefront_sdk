@@ -990,3 +990,15 @@ query getCustomerOrders($customerAccessToken: String!, $first: Int!) {
 }
 # 6. CHECKOUT (if using legacy storefront checkout, optional)
 # Note: Shopify has deprecated some checkout APIs — use Cart API
+
+query getShopInfo {
+  shop {
+    name
+    description
+    paymentSettings {
+      currencyCode
+      countryCode
+      enabledPresentmentCurrencies
+    }
+  }
+}

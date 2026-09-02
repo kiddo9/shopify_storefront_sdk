@@ -22,12 +22,14 @@
   "sideEffects": false,
   "scripts": {
     "clean": "rimraf dist",
-    "dev": "node --loader ts-node/esm src/tests/test.ts",
+    "dev": "node --loader ts-node/esm src/tests/integration/sdk.test.ts",
     "build": "rimraf dist && npm run build:esm && npm run build:cjs",
     "build:esm": "tsc --project tsconfig.json",
     "build:cjs": "tsc --project tsconfig.cjs.json",
-    "dev:test": "node --loader ts-node/esm src/tests/test.ts",
-    "test": "node dist/tests/test.js",
+    "build:docs": "typedoc --plugin typedoc-plugin-markdown --out docs src/index.ts",
+    "test": "vitest run",
+    "test:unit": "vitest run src/tests/unit",
+    "test:integration": "vitest run src/tests/integration",
     "codegen": "graphql-codegen --config codegen.yml",
     "prepare": "npm run build"
   },
@@ -58,10 +60,12 @@
     "@graphql-codegen/typescript": "^5.0.5",
     "@graphql-codegen/typescript-graphql-request": "^6.3.0",
     "@graphql-codegen/typescript-operations": "^5.0.5",
-    "@types/node": "^24.10.1",
-    "axios": "^1.13.2",
+    "@types/node": "^24.13.3",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typedoc": "^0.28.20",
+    "typedoc-plugin-markdown": "^4.13.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.11"
   },
   "dependencies": {
     "dotenv": "^17.2.3",

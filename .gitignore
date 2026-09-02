@@ -8,3 +8,10 @@ schema.json
 .vscode/
 *.log
 *.tsbuildinfo
+PRD.md
+ARCHITETURE.md
+ARCHITECTURE-ESSENTIALS.md
+AGENT.md
+SPEC.md
+CASE_STUDY.md
+docs/

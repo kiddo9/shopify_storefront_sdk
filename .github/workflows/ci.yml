@@ -7,19 +7,34 @@ on:
     branches: [ main ]
 
 jobs:
-  build:
+  build-and-test:
+    name: Build & Test on Node ${{ matrix.node-version }}
     runs-on: ubuntu-latest
+    
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x, 22.x]
 
     steps:
     - uses: actions/checkout@v4
-    - name: Use Node.js
+    
+    - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v4
       with:
-        node-version: '20.x'
+        node-version: ${{ matrix.node-version }}
         cache: 'npm'
-    - run: npm install
-    - run: npm run build
-    - run: npm test
+        
+    - name: Install dependencies
+      run: npm ci
+      
+    - name: Verify TypeScript Build (ESM & CJS)
+      run: npm run build
+      
+    - name: Run Mocked Unit Tests
+      run: npm run test:unit
+      
+    - name: Run Live Integration Tests
+      run: npm run test:integration
       env:
         SHOPIFY_STORE_DOMAIN: ${{ secrets.SHOPIFY_STORE_DOMAIN }}
         SHOPIFY_STOREFRONT_TOKEN: ${{ secrets.SHOPIFY_STOREFRONT_TOKEN }}
